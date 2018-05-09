@@ -36,18 +36,25 @@ class OfficeProcess {
     private final File instanceProfileDir;
     private final ProcessManager processManager;
 
+    private final Map<String, String> envs;
+
     private Process process;
     private long pid = PID_UNKNOWN;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     public OfficeProcess(File officeHome, UnoUrl unoUrl, String[] runAsArgs, File templateProfileDir, File workDir, ProcessManager processManager) {
+        this(officeHome, unoUrl, runAsArgs, templateProfileDir, workDir, processManager, null);
+    }
+
+    public OfficeProcess(File officeHome, UnoUrl unoUrl, String[] runAsArgs, File templateProfileDir, File workDir, ProcessManager processManager, Map<String, String> envs) {
         this.officeHome = officeHome;
         this.unoUrl = unoUrl;
         this.runAsArgs = runAsArgs;
         this.templateProfileDir = templateProfileDir;
         this.instanceProfileDir = getInstanceProfileDir(workDir, unoUrl);
         this.processManager = processManager;
+        this.envs = envs;
     }
 
     public void start() throws IOException {
@@ -82,6 +89,11 @@ class OfficeProcess {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         if (PlatformUtils.isWindows()) {
             addBasisAndUrePaths(processBuilder);
+        }
+        // Add the environment variables into this thing
+        if (this.envs != null && this.envs.size() > 0) {
+            Map<String, String> env = processBuilder.environment();
+            env.putAll(this.envs);
         }
         logger.info(String.format("starting process with acceptString '%s' and profileDir '%s'", unoUrl, instanceProfileDir));
         process = processBuilder.start();

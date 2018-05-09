@@ -13,6 +13,7 @@
 package org.artofsolving.jodconverter.office;
 
 import java.io.File;
+import java.util.Map;
 
 import org.artofsolving.jodconverter.process.ProcessManager;
 import org.artofsolving.jodconverter.process.PureJavaProcessManager;
@@ -29,6 +30,7 @@ class ManagedOfficeProcessSettings {
     private ProcessManager processManager = new PureJavaProcessManager();
     private long retryTimeout = DefaultOfficeManagerConfiguration.DEFAULT_RETRY_TIMEOUT;
     private long retryInterval = DEFAULT_RETRY_INTERVAL;
+    private Map<String, String> environment;
 
     public ManagedOfficeProcessSettings(UnoUrl unoUrl) {
         this.unoUrl = unoUrl;
@@ -94,4 +96,17 @@ class ManagedOfficeProcessSettings {
         this.retryInterval = retryInterval;
     }
 
+    /**
+     * @return A Map containing the environment variables
+     */
+    public Map<String, String> getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @param environment A Map containing the environment variables
+     */
+    public void setEnvironment(Map<String, String> environment) {
+        this.environment = environment;
+    }
 }

@@ -13,6 +13,7 @@
 package org.artofsolving.jodconverter.office;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -32,8 +33,8 @@ class ProcessPoolOfficeManager implements OfficeManager {
 
     public ProcessPoolOfficeManager(File officeHome, UnoUrl[] unoUrls, String[] runAsArgs, File templateProfileDir, File workDir,
             long retryTimeout, long taskQueueTimeout, long taskExecutionTimeout, int maxTasksPerProcess,
-            ProcessManager processManager) {
-		this.taskQueueTimeout = taskQueueTimeout;
+            ProcessManager processManager, Map<String, String> environment) {
+        this.taskQueueTimeout = taskQueueTimeout;
         pool = new ArrayBlockingQueue<PooledOfficeManager>(unoUrls.length);
         pooledManagers = new PooledOfficeManager[unoUrls.length];
         for (int i = 0; i < unoUrls.length; i++) {
@@ -46,9 +47,16 @@ class ProcessPoolOfficeManager implements OfficeManager {
             settings.setTaskExecutionTimeout(taskExecutionTimeout);
             settings.setMaxTasksPerProcess(maxTasksPerProcess);
             settings.setProcessManager(processManager);
+            settings.setEnvironment(environment);
             pooledManagers[i] = new PooledOfficeManager(settings);
         }
         logger.info("ProcessManager implementation is " + processManager.getClass().getSimpleName());
+    }
+
+    public ProcessPoolOfficeManager(File officeHome, UnoUrl[] unoUrls, String[] runAsArgs, File templateProfileDir, File workDir,
+            long retryTimeout, long taskQueueTimeout, long taskExecutionTimeout, int maxTasksPerProcess,
+            ProcessManager processManager) {
+	    this(officeHome, unoUrls, runAsArgs, templateProfileDir, workDir, retryTimeout, taskQueueTimeout, taskExecutionTimeout, maxTasksPerProcess, processManager, null);
     }
 
     public synchronized void start() throws OfficeException {

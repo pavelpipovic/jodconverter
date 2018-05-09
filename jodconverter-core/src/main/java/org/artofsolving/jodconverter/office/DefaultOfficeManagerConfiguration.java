@@ -13,6 +13,8 @@
 package org.artofsolving.jodconverter.office;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.artofsolving.jodconverter.process.ProcessManager;
 import org.artofsolving.jodconverter.process.PureJavaProcessManager;
@@ -37,6 +39,7 @@ public class DefaultOfficeManagerConfiguration {
     private long retryTimeout = DEFAULT_RETRY_TIMEOUT;
 
     private ProcessManager processManager = null;  // lazily initialised
+    private Map<String, String> environment = new HashMap<String, String>();
 
     public DefaultOfficeManagerConfiguration setOfficeHome(String officeHome) throws NullPointerException, IllegalArgumentException {
         checkArgumentNotNull("officeHome", officeHome);
@@ -176,7 +179,7 @@ public class DefaultOfficeManagerConfiguration {
         for (int i = 0; i < numInstances; i++) {
             unoUrls[i] = (connectionProtocol == OfficeConnectionProtocol.PIPE) ? UnoUrl.pipe(pipeNames[i]) : UnoUrl.socket(portNumbers[i]);
         }
-        return new ProcessPoolOfficeManager(officeHome, unoUrls, runAsArgs, templateProfileDir, workDir, retryTimeout, taskQueueTimeout, taskExecutionTimeout, maxTasksPerProcess, processManager);
+        return new ProcessPoolOfficeManager(officeHome, unoUrls, runAsArgs, templateProfileDir, workDir, retryTimeout, taskQueueTimeout, taskExecutionTimeout, maxTasksPerProcess, processManager, environment);
     }
 
     private ProcessManager findBestProcessManager() {
@@ -218,6 +221,15 @@ public class DefaultOfficeManagerConfiguration {
 
     private boolean isValidProfileDir(File profileDir) {
         return new File(profileDir, "user").isDirectory();
+    }
+
+    /**
+     * Adds a key/value pair into the Environment Map
+     * @param key The key to be added (e.g. LANG, LANGUAGE)
+     * @param value The value to be added (e.g. de_AT.UTF-8, en_US.UTF-8, de_DE.UTF-8, ...)
+     */
+    public void addEnvironmentVariable(String key, String value) {
+        this.environment.put(key, value);
     }
 
 }

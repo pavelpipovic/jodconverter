@@ -12,6 +12,9 @@
 //
 package org.artofsolving.jodconverter.office;
 
+import java.util.HashMap;
+import java.util.Map;
+
 class PooledOfficeManagerSettings extends ManagedOfficeProcessSettings {
 
     public static final long DEFAULT_TASK_EXECUTION_TIMEOUT = 120000L;
@@ -19,6 +22,8 @@ class PooledOfficeManagerSettings extends ManagedOfficeProcessSettings {
 
     private long taskExecutionTimeout = DEFAULT_TASK_EXECUTION_TIMEOUT;
     private int maxTasksPerProcess = DEFAULT_MAX_TASKS_PER_PROCESS;
+
+    private Map<String, String> environment = null;
 
     public PooledOfficeManagerSettings(UnoUrl unoUrl) {
         super(unoUrl);
