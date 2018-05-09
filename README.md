@@ -3,6 +3,17 @@
 JODConverter (for Java OpenDocument Converter) automates document conversions
 using LibreOffice or OpenOffice.org.
 
+# About this Fork
+
+I encountered a problem where documents would not be rendered in the correct locale.
+Unfortunately it seems to me that there is no way to pass environment variables to the process creation,
+thus I had to fork this and add the method "addEnvironmentVariable" into "DefaultOfficeManagerConfiguration".
+
+This allows to add environment variables to the ProcessBuilder.
+
+Thanks to Villeroy from the Apache Open Office forums who helped me find the bug.
+Source: [forum.openoffice.org](https://forum.openoffice.org/en/forum/viewtopic.php?f=6&t=93486)
+
 ### Warning: This Repository is Unmaintained
 
 I started this project back in 2003, and stopped maintaining it in 2012. I moved the code here at GitHub in the
